@@ -6,6 +6,8 @@ jobs:
     parameters:
       dockerfile:
         type: string
+      tag-prefix:
+        type: string
 
     steps:
       - checkout
@@ -22,7 +24,15 @@ jobs:
       - run:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
-            docker build . -t test -f << parameters.dockerfile >>
+            docker build . -t electronjs/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
+      - run:
+          name: Push Docker Image
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker push electronjs/build
+
+orbs:
+  docker: circleci/docker@0.5.17
 
 workflows:
   version: 2.1
@@ -31,11 +41,14 @@ workflows:
       - build-image:
           name: build-x64
           dockerfile: Dockerfile
+          tag-prefix: ''
       - build-image:
           name: build-arm32v7
           dockerfile: Dockerfile.arm32v7
+          tag-prefix: arm32v7-
       - build-image:
           name: build-arm64v8
           dockerfile: Dockerfile.arm64v8
+          tag-prefix: arm64v8-
 
 
