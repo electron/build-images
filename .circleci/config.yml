@@ -8,6 +8,8 @@ jobs:
         type: string
       tag-prefix:
         type: string
+      publish:
+        type: boolean
 
     steps:
       - checkout
@@ -25,11 +27,14 @@ jobs:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
             docker build . -t electronjs/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
-      - run:
-          name: Push Docker Image
-          command: |
-            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-            docker push electronjs/build
+      - when:
+          condition: << parameters.publish >>
+          steps:
+            - run:
+                name: Push Docker Image
+                command: |
+                  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                  docker push electronjs/build
 
 orbs:
   docker: circleci/docker@0.5.17
@@ -39,16 +44,58 @@ workflows:
   build:
     jobs:
       - build-image:
+          name: publish-x64
+          dockerfile: Dockerfile
+          tag-prefix: ''
+          publish: true
+          filters:
+            branches:
+              only:
+                - master
+      - build-image:
+          name: publish-arm32v7
+          dockerfile: Dockerfile.arm32v7
+          tag-prefix: arm32v7-
+          publish: true
+          filters:
+            branches:
+              only:
+                - master
+      - build-image:
+          name: publish-arm64v8
+          dockerfile: Dockerfile.arm64v8
+          tag-prefix: arm64v8-
+          publish: true
+          filters:
+            branches:
+              only:
+                - master
+      - build-image:
           name: build-x64
           dockerfile: Dockerfile
           tag-prefix: ''
+          publish: false
+          filters:
+            branches:
+              ignore:
+                - master
       - build-image:
           name: build-arm32v7
           dockerfile: Dockerfile.arm32v7
           tag-prefix: arm32v7-
+          publish: false
+          filters:
+            branches:
+              ignore:
+                - master
       - build-image:
           name: build-arm64v8
           dockerfile: Dockerfile.arm64v8
           tag-prefix: arm64v8-
+          publish: false
+          filters:
+            branches:
+              ignore:
+                - master
 
 
