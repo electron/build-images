@@ -1,0 +1,41 @@
+version: 2.1
+jobs:
+  build-image:
+    machine: true
+    working_directory: ~/src
+    parameters:
+      dockerfile:
+        type: string
+
+    steps:
+      - checkout
+      - run:
+          name: Setup Qemu
+          command: |
+            sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support qemu-system-arm
+            sudo update-binfmts --enable qemu-arm
+            sudo update-binfmts --enable qemu-aarch64
+            sudo update-binfmts --display qemu-arm
+            sudo update-binfmts --display qemu-aarch64
+            cp /usr/bin/qemu-arm-static $(pwd)
+            cp /usr/bin/qemu-aarch64-static $(pwd)
+      - run:
+          name: Build Docker Image - << parameters.dockerfile >>
+          command: |
+            docker build . -t test -f << parameters.dockerfile >>
+
+workflows:
+  version: 2.1
+  build:
+    jobs:
+      - build-image:
+          name: build-x64
+          dockerfile: Dockerfile
+      - build-image:
+          name: build-arm32v7
+          dockerfile: Dockerfile.arm32v7
+      - build-image:
+          name: build-arm64v8
+          dockerfile: Dockerfile.arm64v8
+
+

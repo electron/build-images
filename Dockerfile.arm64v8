@@ -1,6 +1,9 @@
+FROM debian:stretch AS qemu-src
+RUN apt-get update && apt-get install -y qemu-user-static
+
 FROM arm64v8/ubuntu:18.04
 
-RUN ls /etc/sudoers.d
+COPY --from=qemu-src /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
 RUN groupadd --gid 1000 builduser \
   && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser
