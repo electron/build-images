@@ -27,6 +27,7 @@ jobs:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
             docker build . -t electronjs/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
+            docker tag electronjs/build:<< parameters.tag-prefix >>latest electronjs/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
       - when:
           condition: << parameters.publish >>
           steps:
