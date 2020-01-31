@@ -29,6 +29,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libgdk-pixbuf2.0-0:i386 \
     libdbus-1-3:i386 \
     lsof \
+    libgbm1:i386 \
   && curl https://chromium.googlesource.com/chromium/src/+/HEAD/build/install-build-deps.sh\?format\=TEXT | base64 --decode | cat > /setup/install-build-deps.sh \
   && chmod +x /setup/install-build-deps.sh \
   && bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --lib32 --arm \
