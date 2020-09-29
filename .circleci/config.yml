@@ -35,7 +35,7 @@ jobs:
                 name: Push Docker Image
                 command: |
                   echo "$DOCKER_PASSWORD" | docker login electron.azurecr.io -u "$DOCKER_USERNAME" --password-stdin
-                  docker push electronjs/build
+                  docker push electron.azurecr.io/electronjs/build
 
 orbs:
   docker: circleci/docker@0.5.17
