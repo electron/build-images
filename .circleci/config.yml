@@ -26,8 +26,8 @@ jobs:
       - run:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
-            docker build . -t electron.azurecr.io/electronjs/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
-            docker tag electron.azurecr.io/electronjs/build:<< parameters.tag-prefix >>latest electron.azurecr.io/electronjs/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+            docker build . -t electron.azurecr.io/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
+            docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
       - when:
           condition: << parameters.publish >>
           steps:
@@ -35,7 +35,7 @@ jobs:
                 name: Push Docker Image
                 command: |
                   echo "$DOCKER_PASSWORD" | docker login electron.azurecr.io -u "$DOCKER_USERNAME" --password-stdin
-                  docker push electron.azurecr.io/electronjs/build
+                  docker push electron.azurecr.io/build
 
 orbs:
   docker: circleci/docker@0.5.17
