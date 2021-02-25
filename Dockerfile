@@ -49,7 +49,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
 RUN pip install -U crcmod
 
 # dbusmock is needed for Electron tests
-RUN pip install python-dbusmock
+RUN pip install python-dbusmock==0.20.0
 
 RUN mkdir /tmp/workspace
 RUN chown builduser:builduser /tmp/workspace
