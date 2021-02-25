@@ -41,7 +41,7 @@ RUN echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser \
   && echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/*
 
