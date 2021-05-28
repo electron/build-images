@@ -2,8 +2,8 @@ name: Docker
 
 on:
   push:
-    branches:
-      - master
+#     branches:
+#       - master
 
   # Run tests for any PRs.
   pull_request:
