@@ -5,9 +5,6 @@ FROM arm64v8/ubuntu:18.04
 
 COPY --from=qemu-src /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
-RUN groupadd --gid 1000 builduser \
-  && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser
-
 # Set up TEMP directory
 ENV TEMP=/tmp
 RUN chmod a+rwx /tmp
@@ -50,10 +47,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
  xvfb \
 && rm -rf /var/lib/apt/lists/*
 
-# No Sudo Prompt
-RUN echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser \
-  && echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
-
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs \
@@ -68,7 +61,9 @@ RUN pip install python-dbusmock==0.20.0
 ADD tools/xvfb-init.sh /etc/init.d/xvfb
 RUN chmod a+x /etc/init.d/xvfb
 
-RUN usermod -aG sudo builduser
-RUN echo 'builduser ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-WORKDIR /home/builduser
+# Steps needed for CircleCI runner
+RUN adduser --uid 1500 --disabled-password --gecos GECOS circleci
+RUN mkdir -p /opt/circleci/workdir
+RUN chown -R circleci /opt/circleci/workdir
+ADD linux/arm64/circleci-launch-agent /opt/circleci
+RUN chmod 755 /opt/circleci/circleci.service

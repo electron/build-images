@@ -14,6 +14,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Get CircleCI runner
+          command: tools/get-circleci-runner.sh
+      - run:
           name: Setup Qemu
           command: |
             sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support qemu-system-arm
