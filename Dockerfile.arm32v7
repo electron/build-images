@@ -1,5 +1,9 @@
+FROM debian:stretch AS qemu-src
+RUN apt-get update && apt-get install -y qemu-user-static
+
 FROM arm64v8/ubuntu:18.04
 
+COPY --from=qemu-src /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 COPY qemu-arm-static /usr/bin/qemu-arm-static
 
 # Set up TEMP directory
@@ -61,4 +65,3 @@ RUN adduser --uid 1500 --disabled-password --gecos GECOS circleci
 RUN mkdir -p /opt/circleci/workdir
 RUN chown -R circleci /opt/circleci/workdir
 ADD linux/arm64/circleci-launch-agent /opt/circleci
-RUN chmod 755 /opt/circleci/circleci.service

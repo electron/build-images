@@ -66,4 +66,3 @@ RUN adduser --uid 1500 --disabled-password --gecos GECOS circleci
 RUN mkdir -p /opt/circleci/workdir
 RUN chown -R circleci /opt/circleci/workdir
 ADD linux/arm64/circleci-launch-agent /opt/circleci
-RUN chmod 755 /opt/circleci/circleci.service
