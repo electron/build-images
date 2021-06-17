@@ -55,7 +55,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
       - build-image:
           name: publish-arm32v7
           dockerfile: Dockerfile.arm32v7
@@ -64,7 +64,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
       - build-image:
           name: publish-arm64v8
           dockerfile: Dockerfile.arm64v8
@@ -73,7 +73,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - main
       - build-image:
           name: build-x64
           dockerfile: Dockerfile
@@ -82,7 +82,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - master
+                - main
       - build-image:
           name: build-arm32v7
           dockerfile: Dockerfile.arm32v7
@@ -91,7 +91,7 @@ workflows:
           filters:
             branches:
               ignore:
-                - master
+                - main
       - build-image:
           name: build-arm64v8
           dockerfile: Dockerfile.arm64v8
@@ -100,6 +100,6 @@ workflows:
           filters:
             branches:
               ignore:
-                - master
+                - main
 
 
