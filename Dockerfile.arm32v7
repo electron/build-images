@@ -1,13 +1,16 @@
-FROM arm32v7/ubuntu:18.04
+FROM debian:stretch AS qemu-src
+RUN apt-get update && apt-get install -y qemu-user-static
 
+FROM arm64v8/ubuntu:18.04
+
+COPY --from=qemu-src /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 COPY qemu-arm-static /usr/bin/qemu-arm-static
-
-RUN groupadd --gid 1000 builduser \
-  && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser
 
 # Set up TEMP directory
 ENV TEMP=/tmp
 RUN chmod a+rwx /tmp
+
+RUN dpkg --add-architecture armhf
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
  bison \
@@ -16,22 +19,22 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
  curl \
  gperf \
  git \
- libasound2 \
- libasound2-dev \
- libcap-dev \
- libcups2-dev \
- libdbus-1-dev \
- libgnome-keyring-dev \
- libgtk2.0-0 \
- libgtk2.0-dev \
- libgtk-3-0 \
- libgtk-3-dev \
- libnotify-bin \
- libnss3 \
- libnss3-dev \
- libxss1 \
- libxtst-dev \
- libxtst6 \
+ libasound2:armhf \
+ libasound2-dev:armhf \
+ libcap-dev:armhf \
+ libcups2-dev:armhf \
+ libdbus-1-dev:armhf \
+ libgnome-keyring-dev:armhf \
+ libgtk2.0-0:armhf \
+ libgtk2.0-dev:armhf \
+ libgtk-3-0:armhf \
+ libgtk-3-dev:armhf \
+ libnotify-bin:armhf \
+ libnss3:armhf \
+ libnss3-dev:armhf \
+ libxss1:armhf \
+ libxtst-dev:armhf \
+ libxtst6:armhf \
  lsb-release \
  locales \
  nano \
@@ -42,10 +45,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
  wget \
  xvfb \
 && rm -rf /var/lib/apt/lists/*
-
-# No Sudo Prompt
-RUN echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser \
-  && echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
@@ -61,7 +60,8 @@ RUN pip install python-dbusmock==0.20.0
 ADD tools/xvfb-init.sh /etc/init.d/xvfb
 RUN chmod a+x /etc/init.d/xvfb
 
-RUN usermod -aG sudo builduser
-RUN echo 'builduser ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
-
-WORKDIR /home/builduser
+# Steps needed for CircleCI runner
+RUN adduser --uid 1500 --disabled-password --gecos GECOS circleci
+RUN mkdir -p /opt/circleci/workdir
+RUN chown -R circleci /opt/circleci/workdir
+ADD linux/arm64/circleci-launch-agent /opt/circleci
