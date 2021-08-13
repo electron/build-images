@@ -31,8 +31,8 @@ jobs:
           command: |
             docker build . -t electron.azurecr.io/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
             docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
-            docker tag ghcr.io/electron/build:<< parameters.tag-prefix >>$CIRCLE_SHA1 electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
-            docker tag ghcr.io/electron/build:<< parameters.tag-prefix>>latest electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+            docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest ghcr.io/electron/build:<< parameters.tag-prefix>>latest
+            docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest ghcr.io/electron/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
 
       - when:
           condition: << parameters.publish >>
