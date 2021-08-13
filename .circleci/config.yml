@@ -31,6 +31,9 @@ jobs:
           command: |
             docker build . -t electron.azurecr.io/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
             docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+            docker tag ghcr.io/electron/build:<< parameters.tag-prefix >>$CIRCLE_SHA1 electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+            docker tag ghcr.io/electron/build:<< parameters.tag-prefix>>latest electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+
       - when:
           condition: << parameters.publish >>
           steps:
@@ -39,6 +42,9 @@ jobs:
                 command: |
                   echo "$DOCKER_PASSWORD" | docker login electron.azurecr.io -u "$DOCKER_USERNAME" --password-stdin
                   docker push electron.azurecr.io/build
+
+                  echo "$GITHUB_TOKEN" | docker login  ghcr.io -u "$GITHUB_USER" --password-stdin
+                  docker push ghcr.io/electron/build
 
 orbs:
   docker: circleci/docker@0.5.17
