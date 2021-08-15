@@ -49,13 +49,24 @@ jobs:
           condition: << parameters.publish >>
           steps:
             - run:
-                name: Push Docker Image
+                name: Push CI Docker Image
                 command: |
                   echo "$DOCKER_PASSWORD" | docker login electron.azurecr.io -u "$DOCKER_USERNAME" --password-stdin
                   docker push electron.azurecr.io/build
 
                   echo "$GITHUB_TOKEN" | docker login  ghcr.io -u "$GITHUB_USER" --password-stdin
                   docker push ghcr.io/electron/build
+
+      - when:
+          condition:
+            and:
+              - << parameters.publish >>
+              - equal: [ << parameters.dockerfile>>, Dockerfile ]
+          steps:
+            - run:
+                name: Push Devcontainer Docker Image
+                command: |
+                  echo "$GITHUB_TOKEN" | docker login  ghcr.io -u "$GITHUB_USER" --password-stdin
                   docker push ghcr.io/electron/devcontainer
 
 orbs:
