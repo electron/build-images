@@ -22,7 +22,8 @@ package_list="
     wget \
     lsof \
     libfuse2 \
-    software-properties-common"
+    software-properties-common \
+    xvfb"
 
 package_list_32bit="
     g++-multilib \
