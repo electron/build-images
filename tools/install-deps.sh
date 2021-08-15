@@ -60,12 +60,14 @@ rm -rf /var/lib/apt/lists/*
 npm i -g npm@latest
 
 # crcmod is required by gsutil, which is used for filling the gclient git cache
+pip install wheel
 pip install -U crcmod
 
 # TODO: We can remove this step once transition to using python3 to run Electron tests is complete.
 pip install python-dbusmock==0.20.0
 
 # dbusmock is needed for Electron tests
+pip3 install wheel
 pip3 install python-dbusmock==0.20.0
 
 mkdir /tmp/workspace
