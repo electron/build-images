@@ -27,12 +27,23 @@ jobs:
             cp /usr/bin/qemu-arm-static $(pwd)
             cp /usr/bin/qemu-aarch64-static $(pwd)
       - run:
-          name: Build Docker Image - << parameters.dockerfile >>
+          name: Build CI Docker Image - << parameters.dockerfile >>
           command: |
-            docker build . -t electron.azurecr.io/build:<< parameters.tag-prefix >>latest -f << parameters.dockerfile >>
-            docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
-            docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest ghcr.io/electron/build:<< parameters.tag-prefix>>latest
-            docker tag electron.azurecr.io/build:<< parameters.tag-prefix >>latest ghcr.io/electron/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+            docker build . -t electron-build-image -f << parameters.dockerfile >>
+            docker tag electron-build-image electron.azurecr.io/build:<< parameters.tag-prefix >>latest
+            docker tag electron-build-image electron.azurecr.io/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+            docker tag electron-build-image ghcr.io/electron/build:<< parameters.tag-prefix>>latest
+            docker tag electron-build-image ghcr.io/electron/build:<< parameters.tag-prefix >>$CIRCLE_SHA1
+      - when:
+          condition:
+            equal: [ << parameters.dockerfile>>, Dockerfile ]
+          steps:
+            - run:
+                name: Build Devcontainer Docker Image
+                command: |
+                  docker build . -t electron-devcontainer-image -f Dockerfile.devcontainer
+                  docker tag electron-devcontainer-image ghcr.io/electron/devcontainer:latest
+                  docker tag electron-devcontainer-image ghcr.io/electron/devcontainer:$CIRCLE_SHA1
 
       - when:
           condition: << parameters.publish >>
@@ -45,6 +56,7 @@ jobs:
 
                   echo "$GITHUB_TOKEN" | docker login  ghcr.io -u "$GITHUB_USER" --password-stdin
                   docker push ghcr.io/electron/build
+                  docker push ghcr.io/electron/devcontainer
 
 orbs:
   docker: circleci/docker@0.5.17
