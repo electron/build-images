@@ -6,7 +6,7 @@ COPY qemu-arm-static /usr/bin/qemu-arm-static
 ENV TEMP=/tmp
 RUN chmod a+rwx /tmp
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
  bison \
  build-essential \
  clang \
@@ -43,7 +43,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 # Install Node.js
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-  && DEBIAN_FRONTEND=noninteractive apt-get install -y nodejs \
+  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/* \
   && npm i -g npm@latest
 

@@ -183,8 +183,8 @@ EOF
 
 # Container ENTRYPOINT script
 tee /usr/local/share/desktop-init.sh > /dev/null \
-<< EOF 
- #!/bin/bash
+<< EOF
+#!/bin/bash
 
 USERNAME=${USERNAME}
 LOG=/tmp/container-init.log
