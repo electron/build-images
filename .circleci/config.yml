@@ -62,7 +62,7 @@ workflows:
               only:
                 - main
       - build-image:
-          name: publish-x64
+          name: publish-devcontainer
           dockerfile: Dockerfile.devcontainer
           tag-prefix: ''
           image-name: devcontainer
@@ -102,7 +102,7 @@ workflows:
               ignore:
                 - main
       - build-image:
-          name: build-x64
+          name: build-devcontainer
           dockerfile: Dockerfile.devcontainer
           tag-prefix: ''
           image-name: devcontainer
