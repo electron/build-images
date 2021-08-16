@@ -33,7 +33,8 @@ package_list_32bit="
     libdbus-1-3:i386
     libgbm1:i386 \
     libnss3:i386 \
-    libcurl4:i386"
+    libcurl4:i386 \
+    libasound2:i386"
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list
 if [[ "$1" == "--multiarch" ]]; then
