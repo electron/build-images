@@ -40,6 +40,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  lsb-release \
  locales \
  nano \
+ python-dbus \
  python-setuptools \
  python3-dbus \
  python3-gi \
