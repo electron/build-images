@@ -74,6 +74,7 @@ pip install python-dbusmock==0.20.0
 update-alternatives  --install /usr/bin/python3 python3 /usr/bin/python3.7 10
 cd /usr/lib/python3/dist-packages
 cp apt_pkg.cpython-36m-x86_64-linux-gnu.so apt_pkg.so
+ln -s /usr/lib/python3/dist-packages/gi/_gi.cpython-{36m,37m}-x86_64-linux-gnu.so
 
 # dbusmock is needed for Electron tests
 pip3 install wheel
