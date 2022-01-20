@@ -16,7 +16,8 @@ package_list="
     python-dbus \
     python-pip \
     python-setuptools \
-    python3-pip \
+    python3.7 \
+    python3-pip \    
     sudo \
     vim-nox \
     wget \
@@ -68,6 +69,9 @@ pip install -U crcmod
 
 # TODO: We can remove this step once transition to using python3 to run Electron tests is complete.
 pip install python-dbusmock==0.20.0
+
+# Set python3.7 as default python3
+update-alternatives  --install /usr/bin/python3 python3 /usr/bin/python3.7 10
 
 # dbusmock is needed for Electron tests
 pip3 install wheel
