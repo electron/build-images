@@ -17,7 +17,7 @@ package_list="
     python-pip \
     python-setuptools \
     python3.7 \
-    python3-pip \    
+    python3-pip \
     sudo \
     vim-nox \
     wget \
