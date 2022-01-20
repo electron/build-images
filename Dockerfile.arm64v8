@@ -1,7 +1,7 @@
 FROM debian:stretch AS qemu-src
 RUN apt-get update && apt-get install -y qemu-user-static
 
-FROM arm64v8/ubuntu:18.04
+FROM arm64v8/ubuntu:20.04
 
 COPY --from=qemu-src /usr/bin/qemu-aarch64-static /usr/bin/qemu-aarch64-static
 
@@ -25,7 +25,6 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  libcap-dev \
  libcups2-dev \
  libdbus-1-dev \
- libgnome-keyring-dev \
  libgtk2.0-0 \
  libgtk2.0-dev \
  libgtk-3-0 \
@@ -40,13 +39,13 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  lsb-release \
  locales \
  nano \
+ python2 \
  python-dbus \
  python-gi \
  python-setuptools \
  python3-dbus \
  python3-gi \
  python3-setuptools \
- python-pip \
  python3-pip \
  sudo \
  unzip \
@@ -59,6 +58,10 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
   && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/* \
   && npm i -g npm@latest
+
+# Install pip for python2 usage
+RUN curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py \
+  && python2 get-pip.py  
 
 # crcmod is required by gsutil, which is used for filling the gclient git cache
 RUN pip install wheel

@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 RUN groupadd --gid 1000 builduser \
   && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser \
