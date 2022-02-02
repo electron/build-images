@@ -1,7 +1,16 @@
 version: 2.1
+
+executors:
+  linux:
+    machine:
+      image: ubuntu-2004:202111-02
+
+  linux-arm64:
+    resource_class:  electronjs/linux-arm64-docker-build
+    machine: true
+
 jobs:
   build-image:
-    machine: true
     working_directory: ~/src
     parameters:
       dockerfile:
@@ -12,22 +21,15 @@ jobs:
         type: boolean
       image-name:
         type: string
+      executor-type:
+        type: executor
 
+    executor: << parameters.executor-type >>
     steps:
       - checkout
       - run:
           name: Get CircleCI runner
           command: tools/get-circleci-runner.sh
-      - run:
-          name: Setup Qemu
-          command: |
-            sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-user-static binfmt-support qemu-system-arm
-            sudo update-binfmts --enable qemu-arm
-            sudo update-binfmts --enable qemu-aarch64
-            sudo update-binfmts --display qemu-arm
-            sudo update-binfmts --display qemu-aarch64
-            cp /usr/bin/qemu-arm-static $(pwd)
-            cp /usr/bin/qemu-aarch64-static $(pwd)
       - run:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
@@ -53,6 +55,7 @@ workflows:
     jobs:
       - build-image:
           name: publish-x64
+          executor-type: linux
           dockerfile: Dockerfile
           tag-prefix: ''
           image-name: build
@@ -63,6 +66,7 @@ workflows:
                 - main
       - build-image:
           name: publish-devcontainer
+          executor-type: linux
           dockerfile: Dockerfile.devcontainer
           tag-prefix: ''
           image-name: devcontainer
@@ -73,6 +77,7 @@ workflows:
                 - main
       - build-image:
           name: publish-arm32v7
+          executor-type: linux-arm64
           dockerfile: Dockerfile.arm32v7
           tag-prefix: arm32v7-
           image-name: build
@@ -83,6 +88,7 @@ workflows:
                 - main
       - build-image:
           name: publish-arm64v8
+          executor-type: linux-arm64
           dockerfile: Dockerfile.arm64v8
           tag-prefix: arm64v8-
           image-name: build
@@ -93,6 +99,7 @@ workflows:
                 - main
       - build-image:
           name: build-x64
+          executor-type: linux
           dockerfile: Dockerfile
           tag-prefix: ''
           image-name: build
@@ -103,6 +110,7 @@ workflows:
                 - main
       - build-image:
           name: build-devcontainer
+          executor-type: linux
           dockerfile: Dockerfile.devcontainer
           tag-prefix: ''
           image-name: devcontainer
@@ -113,6 +121,7 @@ workflows:
                 - main
       - build-image:
           name: build-arm32v7
+          executor-type: linux-arm64
           dockerfile: Dockerfile.arm32v7
           tag-prefix: arm32v7-
           image-name: build
@@ -123,6 +132,7 @@ workflows:
                 - main
       - build-image:
           name: build-arm64v8
+          executor-type: linux-arm64
           dockerfile: Dockerfile.arm64v8
           tag-prefix: arm64v8-
           image-name: build
@@ -131,5 +141,3 @@ workflows:
             branches:
               ignore:
                 - main
-
-

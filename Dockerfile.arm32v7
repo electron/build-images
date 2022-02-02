@@ -1,7 +1,5 @@
 FROM arm32v7/ubuntu:20.04
 
-COPY qemu-arm-static /usr/bin/qemu-arm-static
-
 # Set up TEMP directory
 ENV TEMP=/tmp
 RUN chmod a+rwx /tmp
