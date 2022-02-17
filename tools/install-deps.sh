@@ -23,6 +23,7 @@ package_list="
     lsof \
     libfuse2 \
     software-properties-common \
+    desktop-file-utils \
     xvfb"
 
 package_list_32bit="
