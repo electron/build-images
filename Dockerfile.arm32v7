@@ -9,6 +9,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  build-essential \
  clang \
  curl \
+ dbus-x11 \
+ doxygen \
  gperf \
  git \
  libasound2 \
@@ -24,16 +26,22 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  libnotify-bin \
  libnss3 \
  libnss3-dev \
- libxkbcommon-dev \
+ libxcb-xkb-dev \
+ libxml2-dev \
  libxss1 \
  libxtst-dev \
  libxtst6 \
  lsb-release \
  locales \
  mesa-common-dev \
+ meson \
  nano \
  python2 \
+ python-dbus \
+ python-gi \
  python-setuptools \
+ python3-dbus \
+ python3-gi \
  python3-setuptools \
  python3-pip \
  sudo \
@@ -71,3 +79,7 @@ RUN adduser --uid 1500 --disabled-password --gecos GECOS circleci
 RUN mkdir -p /opt/circleci/workdir
 RUN chown -R circleci /opt/circleci/workdir
 ADD linux/arm64/circleci-launch-agent /opt/circleci
+
+# Build and install libxkbcommon-1.0.0 since it is not available as a package
+RUN wget https://xkbcommon.org/download/libxkbcommon-1.0.0.tar.xz
+RUN tar -xf libxkbcommon-1.0.0.tar.xz && cd libxkbcommon-1.0.0 && meson setup build && ninja -C build && cd build && meson install
