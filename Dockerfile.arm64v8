@@ -86,4 +86,7 @@ ADD linux/arm64/circleci-launch-agent /opt/circleci
 
 # Build and install libxkbcommon-1.0.0 since it is not available as a package
 RUN wget https://xkbcommon.org/download/libxkbcommon-1.0.0.tar.xz
-RUN tar -xf libxkbcommon-1.0.0.tar.xz && cd libxkbcommon-1.0.0 && meson setup build && ninja -C build && cd build && meson install
+RUN tar -xf libxkbcommon-1.0.0.tar.xz && cd libxkbcommon-1.0.0 && meson setup build && ninja -C build && cd build && meson install  && cp *.0.0.0 /lib/aarch64-linux-gnu
+
+# Link python2 to python
+RUN ln -s /usr/bin/python2 /usr/bin/python
