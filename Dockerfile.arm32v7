@@ -13,6 +13,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  git \
  libasound2 \
  libasound2-dev \
+ libbluetooth-dev \
  libcap-dev \
  libcups2-dev \
  libdbus-1-dev \
@@ -23,11 +24,13 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
  libnotify-bin \
  libnss3 \
  libnss3-dev \
+ libxkbcommon-dev \
  libxss1 \
  libxtst-dev \
  libxtst6 \
  lsb-release \
  locales \
+ mesa-common-dev \
  nano \
  python2 \
  python-setuptools \
