@@ -9,6 +9,7 @@ apt-get update
 
 package_list="
     curl \
+    file \
     libnotify-bin \
     locales \
     lsb-release \
@@ -50,7 +51,7 @@ curl https://chromium.googlesource.com/chromium/src/+/HEAD/build/install-build-d
 curl https://chromium.googlesource.com/chromium/src/+/HEAD/build/install-build-deps.py\?format\=TEXT | base64 --decode | cat > /setup/install-build-deps.py
 
 # Remove snapcraft to avoid issues on docker build
-sed -i 's/${dev_list} snapcraft/${dev_list}/g' /setup/install-build-deps.sh
+sed -i 's/packages.append("snapcraft")/print("skipping snapcraft")/g' /setup/install-build-deps.py
 
 # Ensure installation files are executable
 chmod +x /setup/install-build-deps.sh
