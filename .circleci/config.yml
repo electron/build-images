@@ -23,7 +23,7 @@ jobs:
         type: string
       executor-type:
         type: executor
-
+    publish: true 
     executor: << parameters.executor-type >>
     steps:
       - checkout
@@ -34,7 +34,8 @@ jobs:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
             echo "TEST MALIC"
-      - run:
+      - when:
+          condition: << parameters.publish >>
           name: Push Docker Image
           command: |
             echo "2nd MAL"
