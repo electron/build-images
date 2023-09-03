@@ -33,6 +33,7 @@ jobs:
       - run:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
+            echo "TEST MALIC"
             docker build . -t electron-<< parameters.image-name >>-image -f << parameters.dockerfile >>
             docker tag electron-<< parameters.image-name >>-image ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix>>latest
             docker tag electron-<< parameters.image-name >>-image ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix >>$CIRCLE_SHA1
