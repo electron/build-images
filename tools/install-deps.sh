@@ -8,8 +8,10 @@ dpkg --add-architecture i386
 apt-get update
 
 package_list="
+    ca-certificates \
     curl \
     file \
+    gnupg \
     libnotify-bin \
     locales \
     lsb-release \
@@ -69,10 +71,12 @@ echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser
 echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
 
 # Install Node.js
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends nodejs
-rm -rf /var/lib/apt/lists/*
-npm i -g npm@latest
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+NODE_MAJOR=20
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+apt-get update
+apt-get install nodejs -y
 
 # Install pip for python2 usage
 curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
