@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM --platform=linux/arm64 ubuntu:20.04
 
 RUN groupadd --gid 1000 builduser \
   && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser \
@@ -10,7 +10,7 @@ RUN chmod a+rwx /tmp
 
 # Install Linux packages
 ADD tools/install-deps.sh /tmp/
-RUN bash /tmp/install-deps.sh --32bit
+RUN bash /tmp/install-deps.sh --arm
 
 # Add xvfb init script
 ADD tools/xvfb-init.sh /etc/init.d/xvfb

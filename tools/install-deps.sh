@@ -4,7 +4,9 @@ set -e
 
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
 
-dpkg --add-architecture i386
+if [[ "$1" == "--32bit" ]]; then
+  dpkg --add-architecture i386
+fi
 apt-get update
 
 package_list="
@@ -41,7 +43,7 @@ package_list_32bit="
     libasound2:i386"
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list
-if [[ "$1" == "--multiarch" ]]; then
+if [[ "$1" == "--32bit" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_32bit
 fi
     
@@ -59,10 +61,12 @@ sed -i 's/packages.append("snapcraft")/print("skipping snapcraft")/g' /setup/ins
 chmod +x /setup/install-build-deps.sh
 chmod +x /setup/install-build-deps.py
 
-if [[ "$1" == "--multiarch" ]]; then
-  bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --lib32 --arm --no-nacl
+if [[ "$1" == "--32bit" ]]; then
+  DEBIAN_FRONTEND=noninteractive bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --lib32 --arm --no-nacl
+elif [[ "$1" == "--arm" ]]; then
+  echo Not installing Chromium deps
 else
-  bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --no-arm --no-nacl
+  DEBIAN_FRONTEND=noninteractive bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --no-arm --no-nacl
 fi
 rm -rf /var/lib/apt/lists/*
 

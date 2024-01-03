@@ -31,6 +31,10 @@ jobs:
           name: Get CircleCI runner
           command: tools/get-circleci-runner.sh
       - run:
+          name: Register QEMU
+          command: |
+            docker run --privileged --rm tonistiigi/binfmt --install all
+      - run:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
             docker build . -t electron-<< parameters.image-name >>-image -f << parameters.dockerfile >>
@@ -101,6 +105,17 @@ workflows:
           dockerfile: Dockerfile
           tag-prefix: ''
           image-name: build
+          publish: false
+          filters:
+            branches:
+              ignore:
+                - main
+      - build-image:
+          name: build-arm64v7-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm64v8
+          tag-prefix: arm64v8-
+          image-name: test
           publish: false
           filters:
             branches:
