@@ -116,7 +116,7 @@ workflows:
           dockerfile: Dockerfile.tests.arm64v8
           tag-prefix: arm64v8-
           image-name: test
-          publish: false
+          publish: true
           filters:
             branches:
               ignore:
