@@ -49,7 +49,9 @@ package_list_arm="
     libatk-bridge2.0-0 \
     libcups2 \
     libgbm1 \
-    libgtk-3-0"
+    libgtk-3-0 \
+    make \
+    build-essential"
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list
 if [[ "$1" == "--32bit" ]]; then
