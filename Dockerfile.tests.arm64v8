@@ -1,5 +1,7 @@
 FROM --platform=linux/arm64 ubuntu:20.04
 
+LABEL org.opencontainers.image.source https://github.com/electron/build-images
+
 RUN groupadd --gid 1000 builduser \
   && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser \
   && mkdir -p /setup

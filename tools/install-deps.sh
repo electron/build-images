@@ -42,9 +42,21 @@ package_list_32bit="
     libcurl4:i386 \
     libasound2:i386"
 
+package_list_arm="
+    unzip \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libgbm1 \
+    libgtk-3-0"
+
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list
 if [[ "$1" == "--32bit" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_32bit
+fi
+if [[ "$1" == "--arm" ]]; then
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_arm
 fi
     
 
