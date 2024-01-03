@@ -70,6 +70,30 @@ workflows:
               only:
                 - main
       - build-image:
+          name: publish-arm64v8-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm
+          tag-prefix: arm64v8-
+          image-name: test
+          platform: linux/arm64
+          publish: true
+          filters:
+            branches:
+              only:
+                - main
+      - build-image:
+          name: publish-arm32v7-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm
+          tag-prefix: arm32v7-
+          image-name: test
+          platform: linux/arm
+          publish: true
+          filters:
+            branches:
+              only:
+                - main
+      - build-image:
           name: publish-devcontainer
           executor-type: linux
           dockerfile: Dockerfile.devcontainer
@@ -114,25 +138,25 @@ workflows:
               ignore:
                 - main
       - build-image:
-          name: build-arm64v7-test
+          name: build-arm64v8-test
           executor-type: linux
           dockerfile: Dockerfile.tests.arm
           tag-prefix: arm64v8-
           image-name: test
           platform: linux/arm64
-          publish: true
+          publish: false
           filters:
             branches:
               ignore:
                 - main
       - build-image:
-          name: build-arm64v7-test
+          name: build-arm32v7-test
           executor-type: linux
           dockerfile: Dockerfile.tests.arm
           tag-prefix: arm32v7-
           image-name: test
           platform: linux/arm
-          publish: true
+          publish: false
           filters:
             branches:
               ignore:
