@@ -1,5 +1,7 @@
 FROM ubuntu:20.04
 
+LABEL org.opencontainers.image.source https://github.com/electron/build-images
+
 RUN groupadd --gid 1000 builduser \
   && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser \
   && mkdir -p /setup
@@ -10,7 +12,7 @@ RUN chmod a+rwx /tmp
 
 # Install Linux packages
 ADD tools/install-deps.sh /tmp/
-RUN bash /tmp/install-deps.sh --32bit
+RUN bash /tmp/install-deps.sh --arm
 
 # Add xvfb init script
 ADD tools/xvfb-init.sh /etc/init.d/xvfb

@@ -21,6 +21,9 @@ jobs:
         type: boolean
       image-name:
         type: string
+      platform:
+        type: string
+        default: linux/amd64
       executor-type:
         type: executor
 
@@ -31,9 +34,13 @@ jobs:
           name: Get CircleCI runner
           command: tools/get-circleci-runner.sh
       - run:
+          name: Register QEMU
+          command: |
+            docker run --privileged --rm tonistiigi/binfmt --install all
+      - run:
           name: Build Docker Image - << parameters.dockerfile >>
           command: |
-            docker build . -t electron-<< parameters.image-name >>-image -f << parameters.dockerfile >>
+            docker build --platform=<< parameters.platform >> . -t electron-<< parameters.image-name >>-image -f << parameters.dockerfile >>
             docker tag electron-<< parameters.image-name >>-image ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix>>latest
             docker tag electron-<< parameters.image-name >>-image ghcr.io/electron/<< parameters.image-name >>:<< parameters.tag-prefix >>$CIRCLE_SHA1
 
@@ -57,6 +64,30 @@ workflows:
           dockerfile: Dockerfile
           tag-prefix: ''
           image-name: build
+          publish: true
+          filters:
+            branches:
+              only:
+                - main
+      - build-image:
+          name: publish-arm64v8-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm
+          tag-prefix: arm64v8-
+          image-name: test
+          platform: linux/arm64
+          publish: true
+          filters:
+            branches:
+              only:
+                - main
+      - build-image:
+          name: publish-arm32v7-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm
+          tag-prefix: arm32v7-
+          image-name: test
+          platform: linux/arm
           publish: true
           filters:
             branches:
@@ -101,6 +132,30 @@ workflows:
           dockerfile: Dockerfile
           tag-prefix: ''
           image-name: build
+          publish: false
+          filters:
+            branches:
+              ignore:
+                - main
+      - build-image:
+          name: build-arm64v8-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm
+          tag-prefix: arm64v8-
+          image-name: test
+          platform: linux/arm64
+          publish: false
+          filters:
+            branches:
+              ignore:
+                - main
+      - build-image:
+          name: build-arm32v7-test
+          executor-type: linux
+          dockerfile: Dockerfile.tests.arm
+          tag-prefix: arm32v7-
+          image-name: test
+          platform: linux/arm
           publish: false
           filters:
             branches:
