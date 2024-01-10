@@ -16,5 +16,7 @@ RUN bash /tmp/install-deps.sh --32bit
 ADD tools/xvfb-init.sh /etc/init.d/xvfb
 RUN chmod a+x /etc/init.d/xvfb
 
+RUN rm -rf /var/lib/apt/lists/*
+
 USER builduser
 WORKDIR /home/builduser
