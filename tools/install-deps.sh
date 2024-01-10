@@ -51,7 +51,8 @@ package_list_arm="
     libgbm1 \
     libgtk-3-0 \
     make \
-    build-essential"
+    build-essential \
+    git"
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list
 if [[ "$1" == "--32bit" ]]; then
