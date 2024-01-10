@@ -76,6 +76,10 @@ sed -i 's/packages.append("snapcraft")/print("skipping snapcraft")/g' /setup/ins
 chmod +x /setup/install-build-deps.sh
 chmod +x /setup/install-build-deps.py
 
+# No Sudo Prompt
+echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser
+echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
+
 if [[ "$1" == "--32bit" ]]; then
   DEBIAN_FRONTEND=noninteractive bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --lib32 --arm --no-nacl
 elif [[ "$1" == "--arm" ]]; then
@@ -84,10 +88,6 @@ else
   DEBIAN_FRONTEND=noninteractive bash /setup/install-build-deps.sh --syms --no-prompt --no-chromeos-fonts --no-arm --no-nacl
 fi
 rm -rf /var/lib/apt/lists/*
-
-# No Sudo Prompt
-echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser
-echo 'Defaults    env_keep += "DEBIAN_FRONTEND"' >> /etc/sudoers.d/env_keep
 
 # Install Node.js
 mkdir -p /etc/apt/keyrings
