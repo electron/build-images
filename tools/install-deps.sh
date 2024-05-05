@@ -13,6 +13,7 @@ package_list="
     ca-certificates \
     curl \
     file \
+    gdb \
     gnupg \
     libnotify-bin \
     locales \
