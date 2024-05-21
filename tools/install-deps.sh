@@ -19,7 +19,6 @@ package_list="
     locales \
     lsb-release \
     nano \
-    python2 \
     python-dbus \
     python-setuptools \
     python3-pip \
@@ -97,17 +96,6 @@ NODE_MAJOR=20
 echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list
 apt-get update
 apt-get install nodejs -y
-
-# Install pip for python2 usage
-curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
-python2 get-pip.py
-
-# crcmod is required by gsutil, which is used for filling the gclient git cache
-pip install wheel
-pip install -U crcmod
-
-# TODO: We can remove this step once transition to using python3 to run Electron tests is complete.
-pip install python-dbusmock==0.20.0
 
 # dbusmock is needed for Electron tests
 pip3 install wheel
