@@ -97,6 +97,9 @@ echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.co
 apt-get update
 apt-get install nodejs -y
 
+# Install Yarn
+npm i -g yarn
+
 # dbusmock is needed for Electron tests
 pip3 install wheel
 pip3 install python-dbusmock==0.20.0
