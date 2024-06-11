@@ -10,6 +10,7 @@ RUN chmod a+rwx /tmp
 
 # Install Linux packages
 ADD tools/install-deps.sh /tmp/
+ADD tools/azure_cli_deb_install.sh /tmp/
 RUN bash /tmp/install-deps.sh --32bit
 
 # Add xvfb init script
