@@ -101,5 +101,8 @@ apt-get install nodejs -y
 pip3 install wheel
 pip3 install python-dbusmock==0.20.0
 
+# Install Azure CLI for use in CI
+/tmp/azure_cli_deb_install.sh
+
 mkdir /tmp/workspace
 chown builduser:builduser /tmp/workspace
