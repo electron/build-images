@@ -13,6 +13,8 @@ package_list="
     ca-certificates \
     curl \
     file \
+    gcc-10 \
+    g++-10 \
     gdb \
     gnupg \
     libnotify-bin \
@@ -75,6 +77,16 @@ sed -i 's/packages.append("snapcraft")/print("skipping snapcraft")/g' /setup/ins
 # Ensure installation files are executable
 chmod +x /setup/install-build-deps.sh
 chmod +x /setup/install-build-deps.py
+
+# Ensure g++ and gcc are linked to the correct version
+current_gcc_version=$(g++ -dumpversion | cut -d. -f1)
+if [[ "$current_gcc_version" -lt 10 ]]; then
+  update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+  update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+
+  sudo update-alternatives --config gcc
+  sudo update-alternatives --config g++
+fi
 
 # No Sudo Prompt
 echo 'builduser ALL=NOPASSWD: ALL' >> /etc/sudoers.d/50-builduser
