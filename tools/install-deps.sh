@@ -112,6 +112,8 @@ npm i -g yarn
 
 # dbusmock is needed for Electron tests
 pip3 install wheel
+pip3 install dbus-python
+pip3 install setuptools
 pip3 install python-dbusmock==0.20.0
 
 # Install Azure CLI for use in CI
