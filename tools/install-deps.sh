@@ -21,8 +21,6 @@ package_list="
     locales \
     lsb-release \
     nano \
-    python-dbus \
-    python-setuptools \
     python3-pip \
     sudo \
     vim-nox \
