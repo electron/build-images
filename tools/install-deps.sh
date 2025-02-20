@@ -13,6 +13,7 @@ package_list="
     ca-certificates \
     curl \
     file \
+    fuse \
     gcc-10 \
     g++-10 \
     gdb \
