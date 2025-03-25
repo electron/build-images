@@ -1,0 +1,60 @@
+name: Build Docker images
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  publish-x64:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    uses: ./.github/workflows/pipeline-docker-build.yml
+    with:
+      docker-name: build
+      dockerfile: Dockerfile
+      publish: true
+    secrets: inherit
+  publish-arm64v8-test:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    uses: ./.github/workflows/pipeline-docker-build.yml
+    with:
+      docker-name: test
+      dockerfile: Dockerfile.tests.arm
+      tag-prefix: arm64v8-
+      publish: true
+    secrets: inherit
+  publish-arm32v7-test:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    uses: ./.github/workflows/pipeline-docker-build.yml
+    with:
+      docker-name: test
+      dockerfile: Dockerfile.tests.arm
+      tag-prefix: arm32v7-
+      platform: linux/arm
+      publish: true
+    secrets: inherit
+  publish-devcontainer:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    uses: ./.github/workflows/pipeline-docker-build.yml
+    with:
+      docker-name: devcontainer
+      dockerfile: Dockerfile.devcontainer
+      publish: true
+    secrets: inherit
