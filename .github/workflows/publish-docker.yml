@@ -30,6 +30,7 @@ jobs:
       docker-name: test
       dockerfile: Dockerfile.tests.arm
       tag-prefix: arm64v8-
+      platform: linux/arm64
       publish: true
     secrets: inherit
   publish-arm32v7-test:

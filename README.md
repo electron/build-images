@@ -22,14 +22,18 @@ docker pull ghcr.io/electron/build:latest
 
 ### Linux Arm
 
+This image is used for testing 32 bit Arm builds
+
 ```bash
-docker pull ghcr.io/electron/build:arm32v7-latest
+docker pull ghcr.io/electron/test:arm32v7-latest
 ```
 
 ### Linux Arm64
 
+This image is used for testing 64 bit Arm builds
+
 ```bash
-docker pull ghcr.io/electron/build:arm64v8-latest
+docker pull ghcr.io/electron/test:arm64v8-latest
 ```
 
 ### Linux Devcontainer
