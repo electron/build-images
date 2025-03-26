@@ -17,6 +17,7 @@ package_list="
     g++-10 \
     gdb \
     gnupg \
+    jq \
     libnotify-bin \
     locales \
     lsb-release \
