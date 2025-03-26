@@ -55,7 +55,7 @@ jobs:
         uses: mr-smithers-excellent/docker-build-push@59523c638baec979a74fea99caa9e29d97e5963c # v6.4
         with:        
           dockerfile: ${{ inputs.dockerfile }}
-          image: electron-${{ inputs.docker-name }}-image
+          image: ${{ inputs.docker-name }}
           tags: ${{ inputs.tag-prefix }}latest, ${{ inputs.tag-prefix }}${{ github.sha }}
           platform: ${{ inputs.platform }}
           registry: ghcr.io
