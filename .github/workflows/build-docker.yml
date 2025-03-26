@@ -29,6 +29,7 @@ jobs:
       docker-name: test
       dockerfile: Dockerfile.tests.arm
       tag-prefix: arm64v8-
+      platform: linux/arm64
       publish: false
     secrets: inherit
   build-arm32v7-test:
