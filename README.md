@@ -2,7 +2,7 @@
 
 > Docker containers used to build Electron on Linux
 
-[![CircleCI](https://circleci.com/gh/electron/build-images.svg?style=svg)](https://circleci.com/gh/electron/build-images)
+[![Actions Status](https://github.com/electron/build-images/workflows/Build%20and%20Publish%20Docker%20images/badge.svg)](https://github.com/electron/build-images/actions)
 
 ## Published Images
 
