@@ -1,7 +1,7 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
-RUN groupadd --gid 1000 builduser \
-  && useradd --uid 1000 --gid builduser --shell /bin/bash --create-home builduser \
+RUN groupadd --gid 999 builduser \
+  && useradd --uid 999 --gid builduser --shell /bin/bash --create-home builduser \
   && mkdir -p /setup
 
 # Set up TEMP directory

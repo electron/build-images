@@ -10,6 +10,7 @@ WEBSOCKETIFY_VERSION=0.9.0
 package_list="
     tigervnc-standalone-server \
     tigervnc-common \
+    tigervnc-tools \
     fluxbox \
     dbus-x11 \
     x11-utils \
@@ -122,18 +123,9 @@ if [ "${INSTALL_NOVNC}" = "true" ] && [ ! -d "/usr/local/novnc" ]; then
     ln -s /usr/local/novnc/websockify-${WEBSOCKETIFY_VERSION} /usr/local/novnc/noVNC-${NOVNC_VERSION}/utils/websockify
     rm -f /tmp/websockify-install.zip /tmp/novnc-install.zip
 
-    # noVNC works best with Python 2 right now. Install the right package and use it.
-    if  [[ -z $(apt-cache --names-only search '^python2-minimal$') ]]; then
-        novnc_python_package="python-minimal"
-    else
-        novnc_python_package="python2-minimal"
-    fi
-    # Distros all have python-numpy for python2 right now, but future proof
-    if [[ -z $(apt-cache --names-only search '^python2-numpy$') ]]; then
-        novnc_numpy_package="python-numpy"
-    else
-        novnc_numpy_package="python2-numpy"
-    fi
+    novnc_python_package="python-is-python3"
+    novnc_numpy_package="python3-numpy"
+
     if ! dpkg -s ${novnc_python_package} ${novnc_numpy_package} > /dev/null 2>&1; then
         apt-get -y install --no-install-recommends ${novnc_python_package} ${novnc_numpy_package}
     fi
