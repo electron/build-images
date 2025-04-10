@@ -22,7 +22,6 @@ package_list="
     locales \
     lsb-release \
     nano \
-    python3-pip \
     sudo \
     vim-nox \
     wget \
@@ -36,7 +35,7 @@ package_list_32bit="
     g++-multilib \
     libgl1:i386 \
     libgtk-3-0:i386 \
-    libgdk-pixbuf2.0-0:i386 \
+    libgdk-pixbuf-2.0-0:i386 \
     libdbus-1-3:i386
     libgbm1:i386 \
     libnss3:i386 \
@@ -61,8 +60,7 @@ if [[ "$1" == "--32bit" ]]; then
 fi
 if [[ "$1" == "--arm" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_arm
-fi
-    
+fi  
 
 add-apt-repository ppa:git-core/ppa -y && apt-get update
 
@@ -112,12 +110,10 @@ apt-get install nodejs -y
 npm i -g yarn
 
 # dbusmock is needed for Electron tests
-pip3 install wheel
-pip3 install dbus-python
-pip3 install setuptools
-pip3 install python-dbusmock==0.20.0
+apt-get install -y python3-dbusmock
 
 # Install Azure CLI for use in CI
+sudo rm -rf /var/lib/apt/lists/*  
 /tmp/azure_cli_deb_install.sh
 
 mkdir /tmp/workspace

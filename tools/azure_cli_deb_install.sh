@@ -5,7 +5,7 @@
 #   1. Add Microsoft's GPG Key has a trusted source of apt packages.                                                  #
 #   2. Add Microsoft's repositories as a source for apt packages.                                                     #
 #   3. Installs the Azure CLI from those repositories.                                                                #
-# Given the nature of this script, it must be executed with elevated privileges, i.e. with `sudo`.                    #
+# Given the nature of this script, it must be executed with elevated privileges, i.e. with `sudo`.                    #                                                                                                             #                                                                                                              #                                                                                            #
 #                                                                                                                     #
 # Copied from https://azurecliprod.blob.core.windows.net/$root/deb_install.sh                                         #
 #######################################################################################################################
@@ -39,12 +39,15 @@ setup() {
     set -v
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install -y apt-transport-https lsb-release gnupg curl
+    apt-get install --assume-yes --no-install-recommends apt-transport-https ca-certificates curl gnupg lsb-release
     set +v
 
     assert_consent "Add Microsoft as a trusted package signer?" ${global_consent}
     set -v
-    curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > /etc/apt/trusted.gpg.d/microsoft.gpg
+    mkdir -p /etc/apt/keyrings
+    curl -sLS https://packages.microsoft.com/keys/microsoft.asc |
+      gpg --dearmor > /etc/apt/keyrings/microsoft.gpg
+    chmod go+r /etc/apt/keyrings/microsoft.gpg
     set +v
 
     assert_consent "Add the Azure CLI Repository to your apt sources?" ${global_consent}
@@ -61,13 +64,13 @@ setup() {
             elif [[ $DIST =~ "Debian" ]]; then
                 CLI_REPO="bookworm"
             elif [[ $DIST =~ "LinuxMint" ]]; then
-                CLI_REPO=$(cat /etc/os-release | grep -Po 'UBUNTU_CODENAME=\K.*') || true
+                CLI_REPO=$(grep -Po 'UBUNTU_CODENAME=\K.*' /etc/os-release) || true
                 if [[ -z $CLI_REPO ]]; then
-                    echo $ERROR_MSG
+                    echo "$ERROR_MSG"
                     exit 1
                 fi
             else
-                echo $ERROR_MSG
+                echo "$ERROR_MSG"
                 exit 1
             fi
         fi
@@ -78,13 +81,22 @@ setup() {
             exit 1
         fi
     fi
-    echo "deb [arch=$(dpkg --print-architecture)] https://packages.microsoft.com/repos/azure-cli/ ${CLI_REPO} main" \
-        > /etc/apt/sources.list.d/azure-cli.list
+
+    if [ -f /etc/apt/sources.list.d/azure-cli.list ]; then
+      rm /etc/apt/sources.list.d/azure-cli.list
+    fi
+
+    echo "Types: deb
+URIs: https://packages.microsoft.com/repos/azure-cli/
+Suites: ${CLI_REPO}
+Components: main
+Architectures: $(dpkg --print-architecture)
+Signed-by: /etc/apt/keyrings/microsoft.gpg" | tee /etc/apt/sources.list.d/azure-cli.sources
     apt-get update
     set +v
 
     assert_consent "Install the Azure CLI?" ${global_consent}
-    apt-get install -y azure-cli
+    apt-get install --assume-yes azure-cli
 
 }
 
