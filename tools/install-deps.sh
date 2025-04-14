@@ -26,6 +26,7 @@ package_list="
     vim-nox \
     wget \
     lsof \
+    libasound2 \
     libfuse2 \
     software-properties-common \
     desktop-file-utils \
