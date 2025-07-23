@@ -123,13 +123,9 @@ if [ "${INSTALL_NOVNC}" = "true" ] && [ ! -d "/usr/local/novnc" ]; then
     ln -s /usr/local/novnc/websockify-${WEBSOCKETIFY_VERSION} /usr/local/novnc/noVNC-${NOVNC_VERSION}/utils/websockify
     rm -f /tmp/websockify-install.zip /tmp/novnc-install.zip
 
-    novnc_python_package="python-is-python3"
-    novnc_numpy_package="python3-numpy"
-
-    if ! dpkg -s ${novnc_python_package} ${novnc_numpy_package} > /dev/null 2>&1; then
-        apt-get -y install --no-install-recommends ${novnc_python_package} ${novnc_numpy_package}
-    fi
-    sed -i -E 's/^python /python2 /' /usr/local/novnc/websockify-${WEBSOCKETIFY_VERSION}/run
+    # Install noVNC dependencies and use them.
+    check_packages python3-minimal python3-numpy
+    sed -i -E 's/^python /python3 /' /usr/local/novnc/websockify-${WEBSOCKETIFY_VERSION}/run
 fi 
 
 # Set up folders for scripts and init files
@@ -178,17 +174,23 @@ tee /usr/local/share/desktop-init.sh > /dev/null \
 << EOF
 #!/bin/bash
 
-USERNAME=${USERNAME}
+group_name="$(id -gn \${USERNAME})"
 LOG=/tmp/container-init.log
+
+export DBUS_SESSION_BUS_ADDRESS="\${DBUS_SESSION_BUS_ADDRESS:-"autolaunch:"}"
+export DISPLAY="\${DISPLAY:-:1}"
+export VNC_RESOLUTION="\${VNC_RESOLUTION:-1440x768x16}" 
+export LANG="\${LANG:-"en_US.UTF-8"}"
+export LANGUAGE="\${LANGUAGE:-"en_US.UTF-8"}"
 
 # Execute the command it not already running
 startInBackgroundIfNotRunning()
 {
     log "Starting \$1."
     echo -e "\n** \$(date) **" | sudoIf tee -a /tmp/\$1.log > /dev/null
-    if ! pidof \$1 > /dev/null; then
+    if ! pgrep -x \$1 > /dev/null; then
         keepRunningInBackground "\$@"
-        while ! pidof \$1 > /dev/null; do
+        while ! pgrep -x \$1 > /dev/null; do
             sleep 1
         done
         log "\$1 started."
@@ -234,28 +236,36 @@ log "** SCRIPT START **"
 
 # Start dbus.
 log 'Running "/etc/init.d/dbus start".'
-if [ -f "/var/run/dbus/pid" ] && ! pidof dbus-daemon  > /dev/null; then
+if [ -f "/var/run/dbus/pid" ] && ! pgrep -x dbus-daemon  > /dev/null; then
     sudoIf rm -f /var/run/dbus/pid
 fi
 sudoIf /etc/init.d/dbus start 2>&1 | sudoIf tee -a /tmp/dbus-daemon-system.log > /dev/null
-while ! pidof dbus-daemon > /dev/null; do
+while ! pgrep -x dbus-daemon > /dev/null; do
     sleep 1
 done
 
 # Startup tigervnc server and fluxbox
-sudo rm -rf /tmp/.X11-unix /tmp/.X*-lock
+sudoIf rm -rf /tmp/.X11-unix /tmp/.X*-lock
 mkdir -p /tmp/.X11-unix
 sudoIf chmod 1777 /tmp/.X11-unix
-sudoIf chown root:\${USERNAME} /tmp/.X11-unix
-if [ "\$(echo "\${VNC_RESOLUTION}" | tr -cd 'x' | wc -c)" = "1" ]; then VNC_RESOLUTION=\${VNC_RESOLUTION}x16; fi
-startInBackgroundIfNotRunning "Xtigervnc" sudoUserIf "tigervncserver -screen \${DISPLAY:-:1} \${VNC_RESOLUTION:-1440x768x16} -rfbport \${VNC_PORT:-5901} -dpi \${VNC_DPI:-96} -localhost -desktop fluxbox -fg -passwd /usr/local/etc/electron-dev-containers/vnc-passwd"
+sudoIf chown root:\${group_name} /tmp/.X11-unix
+if [ "$(echo "\${VNC_RESOLUTION}" | tr -cd 'x' | wc -c)" = "1" ]; then VNC_RESOLUTION=\${VNC_RESOLUTION}x16; fi
+screen_geometry="\${VNC_RESOLUTION%*x*}"
+screen_depth="\${VNC_RESOLUTION##*x}"
 
-# Spin up noVNC if installed and not runnning.
-if [ -d "/usr/local/novnc" ] && [ "\$(ps -ef | grep /usr/local/novnc/noVNC*/utils/launch.sh | grep -v grep)" = "" ]; then
-    keepRunningInBackground "noVNC" sudoIf "/usr/local/novnc/noVNC*/utils/launch.sh --listen \${NOVNC_PORT:-6080} --vnc localhost:\${VNC_PORT:-5901}"
-    log "noVNC started."
+common_options="tigervncserver \${DISPLAY} -geometry \${screen_geometry} -depth \${screen_depth} -rfbport \${VNC_PORT} -dpi \${VNC_DPI:-96} -localhost -desktop fluxbox -fg"
+startInBackgroundIfNotRunning "Xtigervnc" sudoUserIf "\${common_options} -passwd /usr/local/etc/electron-dev-containers/vnc-passwd"
+
+# Spin up noVNC if installed and not running.
+if [ -d "/usr/local/novnc" ]; then
+    if [ "\$(ps -ef | grep /usr/local/novnc/noVNC*/utils/launch.sh | grep -v grep)" = "" ] && [ "\$(ps -ef | grep /usr/local/novnc/noVNC*/utils/novnc_proxy | grep -v grep)" = "" ]; then
+        keepRunningInBackground "noVNC" sudoIf "/usr/local/novnc/noVNC*/utils/launch.sh --listen \${NOVNC_PORT} --vnc localhost:\${VNC_PORT}"
+        log "noVNC started with launch.sh."
+    else
+        log "noVNC is already running."
+    fi
 else
-    log "noVNC is already running or not installed."
+    log "noVNC is not installed."
 fi
 
 # Run whatever was passed in
