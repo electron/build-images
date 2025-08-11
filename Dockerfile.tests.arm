@@ -6,6 +6,9 @@ RUN groupadd --gid 999 builduser \
   && useradd --uid 999 --gid builduser --shell /bin/bash --create-home builduser \
   && mkdir -p /setup
 
+RUN groupadd --gid 998 runner \
+  && useradd --uid 998 --gid runner --shell /bin/bash --create-home runner
+
 # Set up TEMP directory
 ENV TEMP=/tmp
 RUN chmod a+rwx /tmp
