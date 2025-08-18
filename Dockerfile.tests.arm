@@ -24,5 +24,7 @@ RUN chmod a+x /etc/init.d/xvfb
 
 RUN rm -rf /var/lib/apt/lists/*
 
+RUN sudo echo 'runner ALL=NOPASSWD: ALL' >> /etc/sudoers.d/60-runner
+
 USER builduser
 WORKDIR /home/builduser
