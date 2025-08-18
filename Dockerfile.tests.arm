@@ -27,4 +27,4 @@ RUN rm -rf /var/lib/apt/lists/*
 USER builduser
 WORKDIR /home/builduser
 
-RUN echo 'runner ALL=NOPASSWD: ALL' >> /etc/sudoers.d/60-runner
+RUN sudo echo 'runner ALL=NOPASSWD: ALL' >> /etc/sudoers.d/60-runner
