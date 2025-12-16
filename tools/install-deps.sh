@@ -66,8 +66,11 @@ fi
 add-apt-repository ppa:git-core/ppa -y && apt-get update
 
 # Download deps installation files from Chromium
-curl https://chromium.googlesource.com/chromium/src/+/HEAD/build/install-build-deps.sh\?format\=TEXT | base64 --decode | cat > /setup/install-build-deps.sh
-curl https://chromium.googlesource.com/chromium/src/+/HEAD/build/install-build-deps.py\?format\=TEXT | base64 --decode | cat > /setup/install-build-deps.py
+# Pin to a specific SHA for reproducibility. To update, get the latest SHA from:
+# curl -s "https://chromium.googlesource.com/chromium/src/+/HEAD?format=JSON" | tail -n +2 | jq -r '.commit'
+CHROMIUM_SRC_SHA="3cb1262b402843c4cfbc8892b0f50e32d31b695e"
+curl "https://chromium.googlesource.com/chromium/src/+/${CHROMIUM_SRC_SHA}/build/install-build-deps.sh?format=TEXT" | base64 --decode | cat > /setup/install-build-deps.sh
+curl "https://chromium.googlesource.com/chromium/src/+/${CHROMIUM_SRC_SHA}/build/install-build-deps.py?format=TEXT" | base64 --decode | cat > /setup/install-build-deps.py
 
 # Remove snapcraft to avoid issues on docker build
 sed -i 's/packages.append("snapcraft")/print("skipping snapcraft")/g' /setup/install-build-deps.py
