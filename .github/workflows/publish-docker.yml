@@ -33,6 +33,20 @@ jobs:
       platform: linux/arm64
       publish: true
     secrets: inherit
+  publish-arm64v8-64k-test:
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    uses: ./.github/workflows/pipeline-docker-build.yml
+    with:
+      docker-name: test
+      dockerfile: Dockerfile.tests.arm64k
+      tag-prefix: arm64v8-64k-
+      platform: linux/arm64
+      publish: true
+    secrets: inherit    
   publish-arm32v7-test:
     permissions:
       contents: read

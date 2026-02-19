@@ -1,0 +1,30 @@
+FROM ubuntu:22.04
+
+LABEL org.opencontainers.image.source https://github.com/electron/build-images
+
+RUN groupadd --gid 999 builduser \
+  && useradd --uid 999 --gid builduser --shell /bin/bash --create-home builduser \
+  && mkdir -p /setup
+
+RUN groupadd --gid 998 runner \
+  && useradd --uid 998 --gid runner --shell /bin/bash --create-home runner
+
+# Set up TEMP directory
+ENV TEMP=/tmp
+RUN chmod a+rwx /tmp
+
+# Install Linux packages
+ADD tools/install-deps.sh /tmp/
+ADD tools/azure_cli_deb_install.sh /tmp/
+RUN bash /tmp/install-deps.sh --arm64k
+
+# Add xvfb init script
+ADD tools/xvfb-init.sh /etc/init.d/xvfb
+RUN chmod a+x /etc/init.d/xvfb
+
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN sudo echo 'runner ALL=NOPASSWD: ALL' >> /etc/sudoers.d/60-runner
+
+USER builduser
+WORKDIR /home/builduser

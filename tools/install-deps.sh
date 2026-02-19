@@ -59,8 +59,12 @@ DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $packa
 if [[ "$1" == "--32bit" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_32bit
 fi
-if [[ "$1" == "--arm" ]]; then
+if [[ "$1" == "--arm" || "$1" == "--arm64k" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_arm
+  if [[ "$1" == "--arm64k" ]]; then
+    DEBIAN_FRONTEND=noninteractive apt-get install -y linux-aws-64k
+    echo "GRUB_FLAVOUR_ORDER=aws-64k" | tee /etc/default/grub.d/local-order.cfg
+  fi
 fi  
 
 add-apt-repository ppa:git-core/ppa -y && apt-get update
