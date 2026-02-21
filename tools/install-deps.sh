@@ -30,6 +30,7 @@ package_list="
     libfuse2 \
     software-properties-common \
     desktop-file-utils \
+    weston \
     xvfb"
 
 package_list_32bit="
