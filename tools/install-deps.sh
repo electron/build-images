@@ -30,6 +30,8 @@ package_list="
     libfuse2 \
     software-properties-common \
     desktop-file-utils \
+    weston \
+    wlheadless-run \
     xvfb"
 
 package_list_32bit="
