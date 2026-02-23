@@ -1,12 +1,11 @@
 name: Build Docker images
 
 on:
-  push:
-    branches-ignore:
-      - main
+  pull_request:
 
 jobs:
   build-x64:
+    if: github.repository == 'electron/build-images'
     permissions:
       contents: read
       packages: write
@@ -19,6 +18,7 @@ jobs:
       publish: false
     secrets: inherit
   build-arm64v8-test:
+    if: github.repository == 'electron/build-images'
     permissions:
       contents: read
       packages: write
@@ -33,6 +33,7 @@ jobs:
       publish: false
     secrets: inherit
   build-arm32v7-test:
+    if: github.repository == 'electron/build-images'
     permissions:
       contents: read
       packages: write
@@ -47,6 +48,7 @@ jobs:
       publish: false
     secrets: inherit
   build-devcontainer:
+    if: github.repository == 'electron/build-images'
     permissions:
       contents: read
       packages: write
