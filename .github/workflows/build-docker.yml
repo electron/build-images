@@ -33,7 +33,7 @@ jobs:
       publish: false
     secrets: inherit
   build-arm32v7-test:
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    if: github.repository == 'electron/build-images'
     permissions:
       contents: read
       packages: write
