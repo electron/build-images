@@ -31,7 +31,7 @@ package_list="
     software-properties-common \
     desktop-file-utils \
     weston \
-    wlheadless-run \
+    xwayland-run \
     xvfb"
 
 package_list_32bit="
@@ -39,7 +39,7 @@ package_list_32bit="
     libgl1:i386 \
     libgtk-3-0:i386 \
     libgdk-pixbuf-2.0-0:i386 \
-    libdbus-1-3:i386
+    libdbus-1-3:i386 \
     libgbm1:i386 \
     libnss3:i386 \
     libcurl4:i386 \
