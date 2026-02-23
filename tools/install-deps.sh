@@ -31,7 +31,6 @@ package_list="
     software-properties-common \
     desktop-file-utils \
     weston \
-    xwayland-run \
     xvfb"
 
 package_list_32bit="
