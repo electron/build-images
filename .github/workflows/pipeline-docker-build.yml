@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
       - name: Build and push Docker image
         id: push
-        uses: mr-smithers-excellent/docker-build-push@59523c638baec979a74fea99caa9e29d97e5963c # v6.4
+        uses: mr-smithers-excellent/docker-build-push@19d2beefef6bcdc202195fdcb9deb79a4fab5c1f # v6.8
         with:        
           dockerfile: ${{ inputs.dockerfile }}
           image: ${{ inputs.docker-name }}
