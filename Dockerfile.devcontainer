@@ -24,7 +24,7 @@ WORKDIR /home/builduser
 RUN rm -rf /home/builduser/.electron_build_tools && \
     git clone https://github.com/electron/build-tools.git /home/builduser/.electron_build_tools && \
     cd /home/builduser/.electron_build_tools && \
-    npx --yes yarn && \
+    node .yarn/releases/yarn-*.cjs && \
     sudo locale-gen "en_US.UTF-8"
 
 # Configure VNC
