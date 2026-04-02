@@ -114,6 +114,13 @@ apt-get install nodejs -y
 # Install Yarn
 npm i -g yarn
 
+# Install gh CLI
+mkdir -p /etc/apt/keyrings
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
+apt-get update
+apt-get install gh -y
+
 # dbusmock is needed for Electron tests
 apt-get install -y python3-dbusmock
 
