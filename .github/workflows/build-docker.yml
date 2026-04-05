@@ -16,7 +16,6 @@ jobs:
       docker-name: build
       dockerfile: Dockerfile
       publish: false
-    secrets: inherit
   build-arm64v8-test:
     if: github.repository == 'electron/build-images'
     permissions:
@@ -31,7 +30,6 @@ jobs:
       tag-prefix: arm64v8-
       platform: linux/arm64
       publish: false
-    secrets: inherit
   build-arm32v7-test:
     if: github.repository == 'electron/build-images'
     permissions:
@@ -46,7 +44,6 @@ jobs:
       tag-prefix: arm32v7-
       platform: linux/arm
       publish: false
-    secrets: inherit
   build-devcontainer:
     if: github.repository == 'electron/build-images'
     permissions:
@@ -59,4 +56,3 @@ jobs:
       docker-name: devcontainer
       dockerfile: Dockerfile.devcontainer
       publish: false
-    secrets: inherit

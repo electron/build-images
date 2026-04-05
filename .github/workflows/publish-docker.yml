@@ -18,7 +18,6 @@ jobs:
       docker-name: build
       dockerfile: Dockerfile
       publish: true
-    secrets: inherit
   publish-arm64v8-test:
     permissions:
       contents: read
@@ -32,7 +31,6 @@ jobs:
       tag-prefix: arm64v8-
       platform: linux/arm64
       publish: true
-    secrets: inherit
   publish-arm32v7-test:
     permissions:
       contents: read
@@ -46,7 +44,6 @@ jobs:
       tag-prefix: arm32v7-
       platform: linux/arm
       publish: true
-    secrets: inherit
   publish-devcontainer:
     permissions:
       contents: read
@@ -58,4 +55,3 @@ jobs:
       docker-name: devcontainer
       dockerfile: Dockerfile.devcontainer
       publish: true
-    secrets: inherit
