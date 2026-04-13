@@ -58,6 +58,7 @@ jobs:
           # Keep this in sync with NODE_MAJOR in tools/install-deps.sh so the
           # cached headers match the Node version installed in the images.
           node-version: '22'
+          package-manager-cache: false
       - name: Pre-populate node-gyp header cache
         # Headers are platform/arch-independent (only Windows pulls an
         # arch-specific node.lib), so it is safe to generate them on the amd64
