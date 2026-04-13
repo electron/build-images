@@ -52,6 +52,22 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          # Keep this in sync with NODE_MAJOR in tools/install-deps.sh so the
+          # cached headers match the Node version installed in the images.
+          node-version: '22'
+          package-manager-cache: false
+      - name: Pre-populate node-gyp header cache
+        # Headers are platform/arch-independent (only Windows pulls an
+        # arch-specific node.lib), so it is safe to generate them on the amd64
+        # runner and COPY the result into every image.
+        run: |
+          corepack enable
+          yarn install --immutable
+          yarn node-gyp install --devdir "$PWD/.node-gyp-headers"
+          ls -la .node-gyp-headers
       - name: Build and push Docker image
         id: push
         uses: mr-smithers-excellent/docker-build-push@19d2beefef6bcdc202195fdcb9deb79a4fab5c1f # v6.8
