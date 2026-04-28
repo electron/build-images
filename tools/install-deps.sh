@@ -69,7 +69,7 @@ add-apt-repository ppa:git-core/ppa -y && apt-get update
 # Download deps installation files from Chromium
 # Pin to a specific SHA for reproducibility. To update, get the latest SHA from:
 # curl -s "https://chromium.googlesource.com/chromium/src/+/HEAD?format=JSON" | tail -n +2 | jq -r '.commit'
-CHROMIUM_SRC_SHA="ca93de2dd8e177999fef798eb88cf20ca35d69b0"
+CHROMIUM_SRC_SHA="9a203598c7343706c2cec8f1853c129b802beacd"
 curl "https://chromium.googlesource.com/chromium/src/+/${CHROMIUM_SRC_SHA}/build/install-build-deps.sh?format=TEXT" | base64 --decode | cat > /setup/install-build-deps.sh
 curl "https://chromium.googlesource.com/chromium/src/+/${CHROMIUM_SRC_SHA}/build/install-build-deps.py?format=TEXT" | base64 --decode | cat > /setup/install-build-deps.py
 
