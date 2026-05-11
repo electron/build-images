@@ -1,0 +1,7 @@
+# faraday trust configuration for electron/build-images.
+# See: https://github.com/electron/faraday
+
+trusted-bots:
+  # Image roll PRs.
+  - login: electron-roller[bot]
+    id: 84116207
