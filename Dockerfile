@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:22.04@sha256:4f838adc7181d9039ac795a7d0aba05a9bd9ecd480d294483169c5def983b64d
 
 RUN groupadd --gid 999 builduser \
   && useradd --uid 999 --gid builduser --shell /bin/bash --create-home builduser \
