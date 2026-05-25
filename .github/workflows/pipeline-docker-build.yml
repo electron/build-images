@@ -47,7 +47,12 @@ jobs:
       id-token: write
     steps:
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+        # Register QEMU static binaries via binfmt_misc so this amd64 runner can
+        # build the arm64/arm images through emulation. This is the same command
+        # docker/setup-qemu-action runs under the hood, inlined to avoid a
+        # third-party action dependency. Pinned by digest; bump manually since
+        # Dependabot does not track images referenced in run steps.
+        run: docker run --rm --privileged docker.io/tonistiigi/binfmt:qemu-v10.2.1@sha256:d3b963f787999e6c0219a48dba02978769286ff61a5f4d26245cb6a6e5567ea3 --install all
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -68,15 +73,41 @@ jobs:
           yarn install --immutable
           yarn node-gyp install --devdir "$PWD/.node-gyp-headers"
           ls -la .node-gyp-headers
-      - name: Build and push Docker image
-        id: push
-        uses: mr-smithers-excellent/docker-build-push@ecb733becfd984bea20b92a4a6af55d5926fa38b # v6.10
-        with:        
-          dockerfile: ${{ inputs.dockerfile }}
-          image: ${{ inputs.docker-name }}
-          tags: ${{ inputs.tag-prefix }}latest, ${{ inputs.tag-prefix }}${{ github.sha }}
-          platform: ${{ inputs.platform }}
-          registry: ghcr.io
-          pushImage: ${{ inputs.publish }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Log in to ghcr.io
+        if: inputs.publish
+        env:
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$REGISTRY_TOKEN" | docker login ghcr.io -u "$REGISTRY_USER" --password-stdin
+      - name: Build Docker image
+        # Inlined replacement for mr-smithers-excellent/docker-build-push.
+        # Image name follows the same scheme the action produced for ghcr.io:
+        # ghcr.io/<owner>/<image>, tagged with "<prefix>latest" and "<prefix><sha>".
+        env:
+          REGISTRY_OWNER: ${{ github.repository_owner }}
+          IMAGE: ${{ inputs.docker-name }}
+          DOCKERFILE: ${{ inputs.dockerfile }}
+          PLATFORM: ${{ inputs.platform }}
+          TAG_PREFIX: ${{ inputs.tag-prefix }}
+          SHA: ${{ github.sha }}
+        run: |
+          owner=$(echo "$REGISTRY_OWNER" | tr '[:upper:]' '[:lower:]')
+          image_name="ghcr.io/${owner}/${IMAGE}"
+          docker build \
+            -f "$DOCKERFILE" \
+            -t "${image_name}:${TAG_PREFIX}latest" \
+            -t "${image_name}:${TAG_PREFIX}${SHA}" \
+            --platform "$PLATFORM" \
+            .
+      - name: Push Docker image
+        if: inputs.publish
+        env:
+          REGISTRY_OWNER: ${{ github.repository_owner }}
+          IMAGE: ${{ inputs.docker-name }}
+          TAG_PREFIX: ${{ inputs.tag-prefix }}
+          SHA: ${{ github.sha }}
+        run: |
+          owner=$(echo "$REGISTRY_OWNER" | tr '[:upper:]' '[:lower:]')
+          image_name="ghcr.io/${owner}/${IMAGE}"
+          docker push "${image_name}:${TAG_PREFIX}latest"
+          docker push "${image_name}:${TAG_PREFIX}${SHA}"
