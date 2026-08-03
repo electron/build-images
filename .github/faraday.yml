@@ -5,3 +5,5 @@ trusted-bots:
   # Image roll PRs.
   - login: electron-roller[bot]
     id: 84116207
+    paths:
+      - tools/install-deps.sh
