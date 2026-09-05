@@ -7,6 +7,15 @@ echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select tr
 if [[ "$1" == "--32bit" ]]; then
   dpkg --add-architecture i386
 fi
+
+# CI runs these images on Azure-hosted runners, where the in-region Ubuntu
+# mirrors are far faster than archive/security/ports.ubuntu.com (which have
+# been seen at ~30 kB/s from the ARC pods). They serve the same signed indices
+# and are reachable from anywhere, so use them for image builds too.
+sed -i -E \
+  -e 's#http://(archive|security)\.ubuntu\.com/ubuntu#http://azure.archive.ubuntu.com/ubuntu#g' \
+  -e 's#http://ports\.ubuntu\.com/ubuntu-ports#http://azure.ports.ubuntu.com/ubuntu-ports#g' \
+  /etc/apt/sources.list
 apt-get update
 
 package_list="
@@ -29,7 +38,10 @@ package_list="
     software-properties-common \
     desktop-file-utils \
     weston \
-    xvfb"
+    xvfb \
+    cups-daemon \
+    cups-client \
+    cups-ipp-utils"
 
 package_list_32bit="
     g++-multilib \
