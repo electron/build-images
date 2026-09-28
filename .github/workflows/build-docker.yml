@@ -56,3 +56,29 @@ jobs:
       docker-name: devcontainer
       dockerfile: Dockerfile.devcontainer
       publish: false
+  required-ci:
+    needs:
+      - build-x64
+      - build-arm64v8-test
+      - build-arm32v7-test
+      - build-devcontainer
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: ${{ always() }}
+    steps:
+      - name: Fail if any required job failed or was cancelled
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        env:
+          BUILD_X64_RESULT: ${{ needs.build-x64.result }}
+          BUILD_ARM64V8_TEST_RESULT: ${{ needs.build-arm64v8-test.result }}
+          BUILD_ARM32V7_TEST_RESULT: ${{ needs.build-arm32v7-test.result }}
+          BUILD_DEVCONTAINER_RESULT: ${{ needs.build-devcontainer.result }}
+        run: |
+          echo "One or more required jobs did not succeed:"
+          echo "  build-x64: $BUILD_X64_RESULT"
+          echo "  build-arm64v8-test: $BUILD_ARM64V8_TEST_RESULT"
+          echo "  build-arm32v7-test: $BUILD_ARM32V7_TEST_RESULT"
+          echo "  build-devcontainer: $BUILD_DEVCONTAINER_RESULT"
+          exit 1
+      - name: We are done
+        run: echo "Hello World"
