@@ -67,6 +67,16 @@ package_list_arm="
     git"
 
 DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list
+
+# Require a ca-certificates with the eMudhra "emSign ECC Root CA - G3" removal
+# (USN-8944-1, Mozilla bundle 2.90). Fails the build if the mirror is stale.
+MIN_CA_CERTS_VERSION="20260816ubuntu0"
+installed_ca_certs=$(dpkg-query -W -f='${Version}' ca-certificates)
+if dpkg --compare-versions "$installed_ca_certs" lt "$MIN_CA_CERTS_VERSION"; then
+  echo "ca-certificates $installed_ca_certs < $MIN_CA_CERTS_VERSION" >&2
+  exit 1
+fi
+
 if [[ "$1" == "--32bit" ]]; then
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends $package_list_32bit
 fi
