@@ -17,13 +17,17 @@ RUN bash /tmp/install-deps.sh --32bit
 ADD tools/xvfb-init.sh /etc/init.d/xvfb
 RUN chmod a+x /etc/init.d/xvfb
 
-# Pre-populated node-gyp header cache (built on the host, see
-# pipeline-docker-build.yml) so parallel `yarn install` postinstall builds in
-# CI do not race downloading the same tarball. Left world-writable so node-gyp
-# can still self-populate at runtime if the target Node version differs.
+# Pre-populated node-gyp header cache so parallel `yarn install` postinstall
+# builds in CI do not race downloading the same tarball. Populated with the
+# image's own Node.js and the node-gyp bundled with its npm, so the cached
+# version always matches `node -v` here (a cache built on the CI host drifts
+# whenever setup-node and nodesource resolve different 22.x releases). Left
+# world-writable so node-gyp can still self-populate at runtime if the target
+# Node version differs.
 ENV npm_config_devdir=/opt/node-gyp-headers
-COPY .node-gyp-headers /opt/node-gyp-headers
-RUN chmod -R a+rwX /opt/node-gyp-headers
+RUN node "$(npm root -g)/npm/node_modules/node-gyp/bin/node-gyp.js" install --ensure --devdir "$npm_config_devdir" \
+  && test -f "$npm_config_devdir/$(node -p process.versions.node)/include/node/node_api_types.h" \
+  && chmod -R a+rwX "$npm_config_devdir"
 
 RUN rm -rf /var/lib/apt/lists/*
 
