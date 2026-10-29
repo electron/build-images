@@ -11,7 +11,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-    uses: ./.github/workflows/pipeline-docker-build.yml
+    uses: $/.github/workflows/pipeline-docker-build.yml
     with:
       docker-name: build
       dockerfile: Dockerfile
@@ -23,7 +23,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-    uses: ./.github/workflows/pipeline-docker-build.yml
+    uses: $/.github/workflows/pipeline-docker-build.yml
     with:
       docker-name: test
       dockerfile: Dockerfile.tests.arm
@@ -37,7 +37,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-    uses: ./.github/workflows/pipeline-docker-build.yml
+    uses: $/.github/workflows/pipeline-docker-build.yml
     with:
       docker-name: test
       dockerfile: Dockerfile.tests.arm
@@ -51,7 +51,7 @@ jobs:
       packages: write
       attestations: write
       id-token: write
-    uses: ./.github/workflows/pipeline-docker-build.yml
+    uses: $/.github/workflows/pipeline-docker-build.yml
     with:
       docker-name: devcontainer
       dockerfile: Dockerfile.devcontainer
