@@ -91,7 +91,7 @@ add-apt-repository ppa:git-core/ppa -y && apt-get update
 # from the official GitHub mirror, which has identical commits and file contents.
 # Pin to a specific SHA for reproducibility. To update, get the latest SHA from:
 # git ls-remote https://github.com/chromium/chromium.git refs/heads/main
-CHROMIUM_SRC_SHA="fb419fbf4fbe356a1f4cb7c79e9bf9482d51cddb"
+CHROMIUM_SRC_SHA="2da547d91aa44da680839b6dfeefeb94af42858f"
 curl -fsSL "https://raw.githubusercontent.com/chromium/chromium/${CHROMIUM_SRC_SHA}/build/install-build-deps.sh" -o /setup/install-build-deps.sh
 curl -fsSL "https://raw.githubusercontent.com/chromium/chromium/${CHROMIUM_SRC_SHA}/build/install-build-deps.py" -o /setup/install-build-deps.py
 
